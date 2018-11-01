@@ -7,14 +7,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace GoogleMap
 {   
     public partial class CoordinatePickerForm : Form
-    {      
+    {
+        private List<Image> imageList;
+        private string imagePath;
+
         public CoordinatePickerForm()
         {
+            imageList = new List<Image>();
             InitializeComponent();
+        }
+
+        private void CoordinatePickerForm_Load(object sender, EventArgs e)
+        {                        
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
@@ -86,6 +95,28 @@ namespace GoogleMap
             Pen blackPen = new Pen(Color.Black, 1);
             verticalLine.DrawLine(blackPen, 50, 50, 100, 100);
             verticalLine.Dispose();
+        }
+
+        private void imageLoaderButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Path.GetFullPath(imagePath);
+            }
+            catch
+            {
+                MessageBox.Show("Given text is not a valid path", "Invalid Path", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            if (Directory.Exists(imagePath))
+            {
+                var imageCollection = Directory.GetFiles(imagePath, "*.jpg", SearchOption.AllDirectories);
+
+                foreach (var image in imageCollection)
+                {
+                    imageList.Add(Image.FromFile(image));
+                }
+            }            
         }
     }
 }
